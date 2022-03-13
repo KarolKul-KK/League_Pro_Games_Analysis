@@ -29,7 +29,7 @@ def get_match_count(soup: bs4.BeautifulSoup) -> int:
     return int(match_count)
 
 
-def get_general_data(data: bs4.element.Tag) -> str:
+def get_general_data(data: bs4.element.Tag, active_url: str) -> str:
     
     pattern = '\d{1,}'
     result = re.search(pattern, active_url)
@@ -103,4 +103,56 @@ def get_right_team_stats(data: bs4.element.Tag) -> str:
     for i in range(5):
         picks_r_team.append(data.find_all('div', attrs={'class': 'col-10'})[3].find_all('a')[i].get('title').split()[0])
         
-    return r_team_result, kills_r_count, first_blood_r, towers_r_count, first_tower_r, dragons_r_count, barons_r_count, gold_r_count, bans_r_team, picks_r_team 
+    return r_team_result, kills_r_count, first_blood_r, towers_r_count, first_tower_r, dragons_r_count, barons_r_count, gold_r_count, bans_r_team, picks_r_team
+
+
+def get_players_stats(data: bs4.element.Tag) -> list:
+
+    player_stats_l = data.find_all('tbody')[0].text.replace('\n', '').split()
+    nickname_l_team = []
+    kda_l_team = []
+    cs_l_team = []
+
+    for i in range(0 , len(player_stats_l), 3):
+        nickname_l_team.append(player_stats_l[i])
+
+    for i in range(1 , len(player_stats_l), 3):
+        kda_l_team.append(player_stats_l[i])
+
+    for i in range(2 , len(player_stats_l), 3):
+        cs_l_team.append(player_stats_l[i])
+        
+    player_stats_r = data.find_all('tbody')[1].text.replace('\n', '').split()
+    nickname_r_team = []
+    kda_r_team = []
+    cs_r_team = []
+
+    for i in range(0 , len(player_stats_r), 3):
+        nickname_r_team.append(player_stats_r[i])
+
+    for i in range(1 , len(player_stats_r), 3):
+        kda_r_team.append(player_stats_r[i])
+
+    for i in range(2 , len(player_stats_r), 3):
+        cs_r_team.append(player_stats_r[i])
+
+        
+    gold_distribution = data.find_all('table', attrs={'class': 'small_table'})[0].find_all('td')
+    gold_distribution_l_team = []
+    gold_distribution_r_team = []
+    for i in range(4, len(gold_distribution), 3):
+        gold_distribution_l_team.append(gold_distribution[i].text)
+
+    for i in range(5, len(gold_distribution), 3):
+        gold_distribution_r_team.append(gold_distribution[i].text)
+        
+    damage_distribution = data.find_all('table', attrs={'class': 'small_table'})[1].find_all('td')
+    damage_distribution_l_team = []
+    damage_distribution_r_team = []
+    for i in range(4, len(gold_distribution), 3):
+        damage_distribution_l_team.append(damage_distribution[i].text)
+
+    for i in range(5, len(gold_distribution), 3):
+        damage_distribution_r_team.append(damage_distribution[i].text)
+        
+    return nickname_l_team, kda_l_team, cs_l_team, nickname_r_team, kda_r_team, cs_r_team, gold_distribution_l_team, gold_distribution_r_team, damage_distribution_l_team, damage_distribution_r_team
