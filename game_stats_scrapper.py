@@ -9,7 +9,7 @@ import time
 import re
 
 
-def get_match_count(html: str, soup: bs4.BeautifulSoup, data: bs4.element.Tag) -> int:
+def get_match_count(soup: bs4.BeautifulSoup) -> int:
     
     game_count = soup.find_all('div', attrs = {'class': 'collapse navbar-collapse'})[1]
     
@@ -29,7 +29,7 @@ def get_match_count(html: str, soup: bs4.BeautifulSoup, data: bs4.element.Tag) -
     return int(match_count)
 
 
-def get_general_data(html: str, soup: bs4.BeautifulSoup, data: bs4.element.Tag) -> str:
+def get_general_data(data: bs4.element.Tag) -> str:
     
     pattern = '\d{1,}'
     result = re.search(pattern, active_url)
@@ -43,7 +43,7 @@ def get_general_data(html: str, soup: bs4.BeautifulSoup, data: bs4.element.Tag) 
     return match_id, match_date, team_names[0], team_names[1], tournament_name, game_time
 
 
-def get_left_team_stats(html: str, soup: bs4.BeautifulSoup, data: bs4.element.Tag) -> str:
+def get_left_team_stats(data: bs4.element.Tag) -> str:
     
     l_team_result = data.find('div', attrs={'class': 'row rowbreak pb-3'}).text.replace(' ', '').replace('\n', '').split('-')[1]
     kills_l_counts = data.find('div', attrs={'class': 'col-2'}).text.replace(' ', '').replace('\n', '')
@@ -75,7 +75,7 @@ def get_left_team_stats(html: str, soup: bs4.BeautifulSoup, data: bs4.element.Ta
     return l_team_result, kills_l_counts, first_blood_l, towers_l_count, first_tower_l, dragons_l_count, baron_l_count, gold_l_count, bans_l_team, picks_l_team 
 
 
-def get_right_team_stats(html: str, soup: bs4.BeautifulSoup, data: bs4.element.Tag) -> str:
+def get_right_team_stats(data: bs4.element.Tag) -> str:
     
     r_team_result = data.find('div', attrs={'class': 'col-12 red-line-header'}).text.replace(' ', '').replace('\n', '').split('-')[1]
     kills_r_count = data.find_all('div', attrs={'class': 'col-2'})[8].text.replace(' ', '').replace('\n', '')
