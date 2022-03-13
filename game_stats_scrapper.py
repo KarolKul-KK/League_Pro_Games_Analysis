@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
+import bs4
 from bs4 import BeautifulSoup
 import pandas as pd
 
@@ -8,10 +9,8 @@ import time
 import re
 
 
-def get_match_count() -> int:
+def get_match_count(html: str, soup: bs4.BeautifulSoup, data: bs4.element.Tag) -> int:
     
-    html = driver.page_source
-    soup = BeautifulSoup(html, 'html5lib')
     game_count = soup.find_all('div', attrs = {'class': 'collapse navbar-collapse'})[1]
     
     if len(game_count.find_all('li')) == 3:
@@ -30,16 +29,11 @@ def get_match_count() -> int:
     return int(match_count)
 
 
-def get_general_data() -> str:
-    
-    html = driver.page_source
-    soup = BeautifulSoup(html, 'html5lib')
+def get_general_data(html: str, soup: bs4.BeautifulSoup, data: bs4.element.Tag) -> str:
     
     pattern = '\d{1,}'
     result = re.search(pattern, active_url)
     match_id = result.group(0)
-    
-    data = soup.find_all('div')[16]
     
     match_date = data.find('div', attrs={'class': 'col-12 col-sm-5 text-right'}).text
     team_names = data.find('h1').text.split('vs')
@@ -49,11 +43,7 @@ def get_general_data() -> str:
     return match_id, match_date, team_names[0], team_names[1], tournament_name, game_time
 
 
-def get_left_team_stats() -> str:
-    
-    html = driver.page_source
-    soup = BeautifulSoup(html, 'html5lib')
-    data = soup.find_all('div')[16]
+def get_left_team_stats(html: str, soup: bs4.BeautifulSoup, data: bs4.element.Tag) -> str:
     
     l_team_result = data.find('div', attrs={'class': 'row rowbreak pb-3'}).text.replace(' ', '').replace('\n', '').split('-')[1]
     kills_l_counts = data.find('div', attrs={'class': 'col-2'}).text.replace(' ', '').replace('\n', '')
@@ -85,11 +75,7 @@ def get_left_team_stats() -> str:
     return l_team_result, kills_l_counts, first_blood_l, towers_l_count, first_tower_l, dragons_l_count, baron_l_count, gold_l_count, bans_l_team, picks_l_team 
 
 
-def get_right_team_stats() -> str:
-    
-    html = driver.page_source
-    soup = BeautifulSoup(html, 'html5lib')
-    data = soup.find_all('div')[16]
+def get_right_team_stats(html: str, soup: bs4.BeautifulSoup, data: bs4.element.Tag) -> str:
     
     r_team_result = data.find('div', attrs={'class': 'col-12 red-line-header'}).text.replace(' ', '').replace('\n', '').split('-')[1]
     kills_r_count = data.find_all('div', attrs={'class': 'col-2'})[8].text.replace(' ', '').replace('\n', '')
@@ -118,4 +104,3 @@ def get_right_team_stats() -> str:
         picks_r_team.append(data.find_all('div', attrs={'class': 'col-10'})[3].find_all('a')[i].get('title').split()[0])
         
     return r_team_result, kills_r_count, first_blood_r, towers_r_count, first_tower_r, dragons_r_count, barons_r_count, gold_r_count, bans_r_team, picks_r_team 
-    
