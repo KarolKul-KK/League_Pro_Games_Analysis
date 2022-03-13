@@ -40,3 +40,4 @@ def main() -> None:
 
     else:
         pd.Series(urls).to_csv('data/games_urls.csv')
+        
