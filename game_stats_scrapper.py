@@ -84,3 +84,38 @@ def get_left_team_stats() -> str:
 
     return l_team_result, kills_l_counts, first_blood_l, towers_l_count, first_tower_l, dragons_l_count, baron_l_count, gold_l_count, bans_l_team, picks_l_team 
 
+
+def get_right_team_stats() -> str:
+    
+    html = driver.page_source
+    soup = BeautifulSoup(html, 'html5lib')
+    data = soup.find_all('div')[16]
+    
+    r_team_result = data.find('div', attrs={'class': 'col-12 red-line-header'}).text.replace(' ', '').replace('\n', '').split('-')[1]
+    kills_r_count = data.find_all('div', attrs={'class': 'col-2'})[8].text.replace(' ', '').replace('\n', '')
+    towers_r_count = data.find_all('div', attrs={'class': 'col-2'})[9].text.replace(' ', '').replace('\n', '')
+    
+    if len(data.find_all('div', attrs={'class': 'col-2'})[8]) == 4:
+        first_blood_r = 1
+    else:
+        first_blood_r = 0
+    
+    if len(data.find_all('div', attrs={'class': 'col-2'})[9]) == 4:
+        first_tower_r = 1
+    else:
+        first_tower_r = 0
+    
+    dragons_r_count = data.find_all('div', attrs={'class': 'col-2'})[10].text.replace(' ', '').replace('\n', '')
+    barons_r_count = data.find_all('div', attrs={'class': 'col-2'})[11].text.replace(' ', '').replace('\n', '')
+    gold_r_count = data.find_all('div', attrs={'class': 'col-2'})[12].text.replace(' ', '').replace('\n', '')
+    
+    bans_r_team = []
+    for i in range(5):
+        bans_r_team.append(data.find_all('div', attrs={'class': 'col-10'})[2].find_all('a')[i].get('title').split()[0])
+    
+    picks_r_team = []
+    for i in range(5):
+        picks_r_team.append(data.find_all('div', attrs={'class': 'col-10'})[3].find_all('a')[i].get('title').split()[0])
+        
+    return r_team_result, kills_r_count, first_blood_r, towers_r_count, first_tower_r, dragons_r_count, barons_r_count, gold_r_count, bans_r_team, picks_r_team 
+    
