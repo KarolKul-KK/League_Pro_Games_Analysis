@@ -39,8 +39,10 @@ def get_general_data(data: bs4.element.Tag, active_url: str) -> str:
     team_names = data.find('h1').text.split('vs')
     tournament_name = data.find('a').text
     game_time = data.find('div', attrs={'class': 'col-6 text-center'}).find('h1').text
+
+    general_data_series = pd.Series(match_id, match_date, team_names[0], team_names[1], tournament_name, game_time)
     
-    return match_id, match_date, team_names[0], team_names[1], tournament_name, game_time
+    return match_id, general_data_series
 
 
 def get_left_team_stats(data: bs4.element.Tag) -> str:
@@ -72,7 +74,9 @@ def get_left_team_stats(data: bs4.element.Tag) -> str:
     for i in range(5):
         picks_l_team.append(data.find_all('div', attrs={'class': 'col-10'})[1].find_all('a')[i].get('title').split()[0])
 
-    return l_team_result, kills_l_counts, first_blood_l, towers_l_count, first_tower_l, dragons_l_count, baron_l_count, gold_l_count, bans_l_team, picks_l_team 
+    left_team_stats = pd.Series(l_team_result, kills_l_counts, first_blood_l, towers_l_count, first_tower_l, dragons_l_count, baron_l_count, gold_l_count, bans_l_team, picks_l_team )
+
+    return left_team_stats
 
 
 def get_right_team_stats(data: bs4.element.Tag) -> str:
@@ -102,8 +106,10 @@ def get_right_team_stats(data: bs4.element.Tag) -> str:
     picks_r_team = []
     for i in range(5):
         picks_r_team.append(data.find_all('div', attrs={'class': 'col-10'})[3].find_all('a')[i].get('title').split()[0])
+
+    right_team_stats = pd.Series(r_team_result, kills_r_count, first_blood_r, towers_r_count, first_tower_r, dragons_r_count, barons_r_count, gold_r_count, bans_r_team, picks_r_team)
         
-    return r_team_result, kills_r_count, first_blood_r, towers_r_count, first_tower_r, dragons_r_count, barons_r_count, gold_r_count, bans_r_team, picks_r_team
+    return right_team_stats
 
 
 def get_players_stats(data: bs4.element.Tag) -> list:
@@ -154,5 +160,8 @@ def get_players_stats(data: bs4.element.Tag) -> list:
 
     for i in range(5, len(gold_distribution), 3):
         damage_distribution_r_team.append(damage_distribution[i].text)
+
+    player_stats = pd.Series(nickname_l_team, kda_l_team, cs_l_team, nickname_r_team, kda_r_team, cs_r_team, gold_distribution_l_team, gold_distribution_r_team, damage_distribution_l_team, damage_distribution_r_team)
         
-    return nickname_l_team, kda_l_team, cs_l_team, nickname_r_team, kda_r_team, cs_r_team, gold_distribution_l_team, gold_distribution_r_team, damage_distribution_l_team, damage_distribution_r_team
+    return player_stats
+    
