@@ -29,7 +29,7 @@ def get_match_count(soup: bs4.BeautifulSoup) -> int:
     return int(match_count)
 
 
-def get_general_data(data: bs4.element.Tag, active_url: str) -> str:
+def get_general_data(data: bs4.element.Tag, active_url: str) -> pd.Series:
     
     pattern = '\d{1,}'
     result = re.search(pattern, active_url)
@@ -45,7 +45,7 @@ def get_general_data(data: bs4.element.Tag, active_url: str) -> str:
     return match_id, general_data_series
 
 
-def get_left_team_stats(data: bs4.element.Tag) -> str:
+def get_left_team_stats(data: bs4.element.Tag) -> pd.Series:
     
     l_team_result = data.find('div', attrs={'class': 'row rowbreak pb-3'}).text.replace(' ', '').replace('\n', '').split('-')[1]
     kills_l_counts = data.find('div', attrs={'class': 'col-2'}).text.replace(' ', '').replace('\n', '')
@@ -79,7 +79,7 @@ def get_left_team_stats(data: bs4.element.Tag) -> str:
     return left_team_stats
 
 
-def get_right_team_stats(data: bs4.element.Tag) -> str:
+def get_right_team_stats(data: bs4.element.Tag) -> pd.Series:
     
     r_team_result = data.find('div', attrs={'class': 'col-12 red-line-header'}).text.replace(' ', '').replace('\n', '').split('-')[1]
     kills_r_count = data.find_all('div', attrs={'class': 'col-2'})[8].text.replace(' ', '').replace('\n', '')
@@ -112,7 +112,7 @@ def get_right_team_stats(data: bs4.element.Tag) -> str:
     return right_team_stats
 
 
-def get_players_stats(data: bs4.element.Tag) -> list:
+def get_players_stats(data: bs4.element.Tag) -> pd.Series:
 
     player_stats_l = data.find_all('tbody')[0].text.replace('\n', '').split()
     nickname_l_team = []
@@ -164,4 +164,3 @@ def get_players_stats(data: bs4.element.Tag) -> list:
     player_stats = pd.Series(nickname_l_team, kda_l_team, cs_l_team, nickname_r_team, kda_r_team, cs_r_team, gold_distribution_l_team, gold_distribution_r_team, damage_distribution_l_team, damage_distribution_r_team)
         
     return player_stats
-    
