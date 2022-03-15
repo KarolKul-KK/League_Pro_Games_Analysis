@@ -29,7 +29,7 @@ def get_match_count(soup: bs4.BeautifulSoup) -> int:
     return int(match_count)
 
 
-def get_general_data(data: bs4.element.Tag, active_url: str) -> str:
+def get_general_data(data: bs4.element.Tag, active_url: str) -> pd.Series:
     
     pattern = '\d{1,}'
     result = re.search(pattern, active_url)
@@ -40,12 +40,12 @@ def get_general_data(data: bs4.element.Tag, active_url: str) -> str:
     tournament_name = data.find('a').text
     game_time = data.find('div', attrs={'class': 'col-6 text-center'}).find('h1').text
 
-    general_data_series = pd.Series(match_id, match_date, team_names[0], team_names[1], tournament_name, game_time)
+    general_data_series = pd.Series([match_id, match_date, team_names[0], team_names[1], tournament_name, game_time])
     
     return match_id, general_data_series
 
 
-def get_left_team_stats(data: bs4.element.Tag) -> str:
+def get_left_team_stats(data: bs4.element.Tag) -> pd.Series:
     
     l_team_result = data.find('div', attrs={'class': 'row rowbreak pb-3'}).text.replace(' ', '').replace('\n', '').split('-')[1]
     kills_l_counts = data.find('div', attrs={'class': 'col-2'}).text.replace(' ', '').replace('\n', '')
@@ -74,12 +74,13 @@ def get_left_team_stats(data: bs4.element.Tag) -> str:
     for i in range(5):
         picks_l_team.append(data.find_all('div', attrs={'class': 'col-10'})[1].find_all('a')[i].get('title').split()[0])
 
-    left_team_stats = pd.Series(l_team_result, kills_l_counts, first_blood_l, towers_l_count, first_tower_l, dragons_l_count, baron_l_count, gold_l_count, bans_l_team, picks_l_team )
+    index = ['Result', 'Kills', 'First_Blood', 'Towers', 'First_Tower', 'Dragons', 'Barons', 'Gold', 'Bans', 'Picks']
+    left_team_stats = pd.Series([l_team_result, kills_l_counts, first_blood_l, towers_l_count, first_tower_l, dragons_l_count, baron_l_count, gold_l_count, bans_l_team, picks_l_team], index=index)
 
-    return left_team_stats
+    return left_team_stats, l_team_result
 
 
-def get_right_team_stats(data: bs4.element.Tag) -> str:
+def get_right_team_stats(data: bs4.element.Tag) -> pd.Series:
     
     r_team_result = data.find('div', attrs={'class': 'col-12 red-line-header'}).text.replace(' ', '').replace('\n', '').split('-')[1]
     kills_r_count = data.find_all('div', attrs={'class': 'col-2'})[8].text.replace(' ', '').replace('\n', '')
@@ -107,12 +108,13 @@ def get_right_team_stats(data: bs4.element.Tag) -> str:
     for i in range(5):
         picks_r_team.append(data.find_all('div', attrs={'class': 'col-10'})[3].find_all('a')[i].get('title').split()[0])
 
-    right_team_stats = pd.Series(r_team_result, kills_r_count, first_blood_r, towers_r_count, first_tower_r, dragons_r_count, barons_r_count, gold_r_count, bans_r_team, picks_r_team)
-        
-    return right_team_stats
+    index = ['Result', 'Kills', 'First_Blood', 'Towers', 'First_Tower', 'Dragons', 'Barons', 'Gold', 'Bans', 'Picks']
+    right_team_stats = pd.Series([r_team_result, kills_r_count, first_blood_r, towers_r_count, first_tower_r, dragons_r_count, barons_r_count, gold_r_count, bans_r_team, picks_r_team], index=index)
+    
+    return right_team_stats, r_team_result
 
 
-def get_players_stats(data: bs4.element.Tag) -> list:
+def get_players_stats(data: bs4.element.Tag) -> pd.DataFrame:
 
     player_stats_l = data.find_all('tbody')[0].text.replace('\n', '').split()
     nickname_l_team = []
@@ -161,7 +163,7 @@ def get_players_stats(data: bs4.element.Tag) -> list:
     for i in range(5, len(gold_distribution), 3):
         damage_distribution_r_team.append(damage_distribution[i].text)
 
-    player_stats = pd.Series(nickname_l_team, kda_l_team, cs_l_team, nickname_r_team, kda_r_team, cs_r_team, gold_distribution_l_team, gold_distribution_r_team, damage_distribution_l_team, damage_distribution_r_team)
-        
-    return player_stats
+    player_stats_l = pd.DataFrame([nickname_l_team, kda_l_team, cs_l_team, damage_distribution_l_team, gold_distribution_l_team])
+    player_stats_r = pd.DataFrame([nickname_r_team, kda_r_team, cs_r_team, gold_distribution_r_team, damage_distribution_r_team])
     
+    return player_stats_l.T, player_stats_r.T
