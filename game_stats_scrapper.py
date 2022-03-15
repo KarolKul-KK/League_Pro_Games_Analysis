@@ -40,7 +40,8 @@ def get_general_data(data: bs4.element.Tag, active_url: str) -> pd.Series:
     tournament_name = data.find('a').text
     game_time = data.find('div', attrs={'class': 'col-6 text-center'}).find('h1').text
 
-    general_data_series = pd.Series([match_id, match_date, team_names[0], team_names[1], tournament_name, game_time])
+    index = ['Macth_id', 'Date', 'Left_Team', 'Right_Team', 'Tournament', 'Time']
+    general_data_series = pd.Series([match_id, match_date, team_names[0], team_names[1], tournament_name, game_time], index=index)
     
     return match_id, general_data_series
 
@@ -163,7 +164,9 @@ def get_players_stats(data: bs4.element.Tag) -> pd.DataFrame:
     for i in range(5, len(gold_distribution), 3):
         damage_distribution_r_team.append(damage_distribution[i].text)
 
-    player_stats_l = pd.DataFrame([nickname_l_team, kda_l_team, cs_l_team, damage_distribution_l_team, gold_distribution_l_team])
-    player_stats_r = pd.DataFrame([nickname_r_team, kda_r_team, cs_r_team, gold_distribution_r_team, damage_distribution_r_team])
+    position = ['Top', 'Jungle', 'Mid', 'Adc', 'Support']
+
+    player_stats_l = pd.DataFrame([nickname_l_team, kda_l_team, cs_l_team, damage_distribution_l_team, gold_distribution_l_team, position])
+    player_stats_r = pd.DataFrame([nickname_r_team, kda_r_team, cs_r_team, gold_distribution_r_team, damage_distribution_r_team, position])
     
     return player_stats_l.T, player_stats_r.T
