@@ -114,7 +114,7 @@ def get_right_team_stats(data: bs4.element.Tag) -> pd.Series:
     return right_team_stats, r_team_result
 
 
-def get_players_stats(data: bs4.element.Tag) -> pd.Series:
+def get_players_stats(data: bs4.element.Tag) -> pd.DataFrame:
 
     player_stats_l = data.find_all('tbody')[0].text.replace('\n', '').split()
     nickname_l_team = []
