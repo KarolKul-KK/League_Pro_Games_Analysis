@@ -6,11 +6,20 @@ import pandas as pd
 
 import time
 import re
+import os
 
 
 url = "https://gol.gg/esports/home/"
 driver = webdriver.Safari()
 driver.get(url)
+
+
+def make_dir():
+    
+    directory = 'data'
+    os.makedirs(directory, exist_ok=True)
+    print("Directory '%s' created or already exist" %directory)
+
 
 def get_urls(urls: list) -> None:
         
@@ -32,6 +41,7 @@ def get_urls(urls: list) -> None:
 
 def main() -> None:
 
+    make_dir()
     urls = []
     while True:
         get_urls(urls)
@@ -43,7 +53,7 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    
     main()
     driver.close()
+
     
