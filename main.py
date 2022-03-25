@@ -38,9 +38,9 @@ def main() -> None:
             right_team_stats = get_right_team_stats(data)
             player_stats = get_players_stats(data)
 
-            general_table = pd.concat([general_table, general_data_series], ignore_index=True)
-            left_team_stats_table = pd.concat([left_team_stats_table, left_team_stats], ignore_index=True)
-            right_team_stats_table = pd.concat([right_team_stats_table, right_team_stats], ignore_index=True)
+            general_table = pd.concat([general_table, pd.DataFrame(general_data_series).T], ignore_index=True)
+            left_team_stats_table = pd.concat([left_team_stats_table, pd.DataFrame(left_team_stats).T], ignore_index=True)
+            right_team_stats_table = pd.concat([right_team_stats_table, pd.DataFrame(right_team_stats).T], ignore_index=True)
             players_stats_table = pd.concat([players_stats_table, player_stats])
 
 
