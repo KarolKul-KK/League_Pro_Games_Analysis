@@ -117,35 +117,35 @@ def get_right_team_stats(data: bs4.element.Tag, match_id: int, match_count_i: in
     return right_team_stats
 
 
-def get_players_stats(data: bs4.element.Tag) -> pd.DataFrame:
+def get_players_stats(data: bs4.element.Tag, match_id: int, left_team_picks: list, right_team_picks: list, match_count_i: int) -> pd.DataFrame:
 
-    player_stats_l = data.find_all('tbody')[0].text.replace('\n', '').split()
+    player_stats_l = data.find_all('tbody')[0].find_all('td')
     nickname_l_team = []
     kda_l_team = []
     cs_l_team = []
 
-    for i in range(0 , len(player_stats_l), 3):
-        nickname_l_team.append(player_stats_l[i])
+    for i in range(0 , len(player_stats_l), 13):
+        nickname_l_team.append(player_stats_l[i].text.replace('\n', '').split())
 
-    for i in range(1 , len(player_stats_l), 3):
-        kda_l_team.append(player_stats_l[i])
+    for i in range(11 , len(player_stats_l), 13):
+        kda_l_team.append(player_stats_l[i].text.replace('\n', '').split())
 
-    for i in range(2 , len(player_stats_l), 3):
-        cs_l_team.append(player_stats_l[i])
+    for i in range(12 , len(player_stats_l), 13):
+        cs_l_team.append(player_stats_l[i].text.replace('\n', '').split())
         
-    player_stats_r = data.find_all('tbody')[1].text.replace('\n', '').split()
+    player_stats_r = data.find_all('tbody')[0].find_all('td')
     nickname_r_team = []
     kda_r_team = []
     cs_r_team = []
 
-    for i in range(0 , len(player_stats_r), 3):
-        nickname_r_team.append(player_stats_r[i])
+    for i in range(0 , len(player_stats_r), 13):
+        nickname_r_team.append(player_stats_r[i].text.replace('\n', '').split())
 
-    for i in range(1 , len(player_stats_r), 3):
-        kda_r_team.append(player_stats_r[i])
+    for i in range(11 , len(player_stats_r), 13):
+        kda_r_team.append(player_stats_r[i].text.replace('\n', '').split())
 
-    for i in range(2 , len(player_stats_r), 3):
-        cs_r_team.append(player_stats_r[i])
+    for i in range(12 , len(player_stats_r), 13):
+        cs_r_team.append(player_stats_r[i].text.replace('\n', '').split())
 
         
     gold_distribution = data.find_all('table', attrs={'class': 'small_table'})[0].find_all('td')
@@ -165,10 +165,12 @@ def get_players_stats(data: bs4.element.Tag) -> pd.DataFrame:
 
     for i in range(5, len(damage_distribution), 3):
         damage_distribution_r_team.append(damage_distribution[i].text)
-
-    position = ['Top', 'Jungle', 'Mid', 'Adc', 'Support']
-
-    player_stats_l = pd.DataFrame([nickname_l_team, kda_l_team, cs_l_team, damage_distribution_l_team, gold_distribution_l_team, position])
-    player_stats_r = pd.DataFrame([nickname_r_team, kda_r_team, cs_r_team, gold_distribution_r_team, damage_distribution_r_team, position])
     
-    return player_stats_l.T, player_stats_r.T
+    position = ['Top', 'Jungle', 'Mid', 'Adc', 'Support']
+    match_id = [match_id, match_id, match_id, match_id, match_id]
+    match_count = [match_count_i, match_count_i, match_count_i, match_count_i, match_count_i]
+    
+    player_stats_l = pd.DataFrame([nickname_l_team, kda_l_team, cs_l_team, damage_distribution_l_team, gold_distribution_l_team, left_team_picks, position, match_id, match_count]).T
+    player_stats_r = pd.DataFrame([nickname_r_team, kda_r_team, cs_r_team, damage_distribution_r_team, gold_distribution_r_team, right_team_picks, position, match_id, match_count]).T
+    
+    return pd.concat([player_stats_l, player_stats_r], ignore_index=True)
