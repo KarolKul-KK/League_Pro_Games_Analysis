@@ -39,14 +39,16 @@ def get_general_data(data: bs4.element.Tag, active_url: str) -> pd.Series:
     tournament_name = data.find('a').text
     game_time = data.find('div', attrs={'class': 'col-6 text-center'}).find('h1').text
 
-    index = ['Macth_id', 'Date', 'Left_Team', 'Right_Team', 'Tournament', 'Time']
+    index = ['Match_id', 'Date', 'Left_Team', 'Right_Team', 'Tournament', 'Time']
     general_data_series = pd.Series([match_id, match_date, team_names[0], team_names[1], tournament_name, game_time], index=index)
     
     return general_data_series
 
 
-def get_left_team_stats(data: bs4.element.Tag) -> pd.Series:
+def get_left_team_stats(data: bs4.element.Tag, match_id: int, match_count_i: int) -> pd.Series:
+    '''match_count_i is iteration in for loop when scrapper working.'''
     
+    l_team_name = l_team_result = data.find('div', attrs={'class': 'row rowbreak pb-3'}).text.strip().replace('\n', '').split('-')[0]
     l_team_result = data.find('div', attrs={'class': 'row rowbreak pb-3'}).text.replace(' ', '').replace('\n', '').split('-')[1]
     kills_l_counts = data.find('div', attrs={'class': 'col-2'}).text.replace(' ', '').replace('\n', '')
     
@@ -73,15 +75,16 @@ def get_left_team_stats(data: bs4.element.Tag) -> pd.Series:
     picks_l_team = []
     for i in range(5):
         picks_l_team.append(data.find_all('div', attrs={'class': 'col-10'})[1].find_all('a')[i].get('title').split()[0])
-
-    index = ['Result', 'Kills', 'First_Blood', 'Towers', 'First_Tower', 'Dragons', 'Barons', 'Gold', 'Bans', 'Picks']
-    left_team_stats = pd.Series([l_team_result, kills_l_counts, first_blood_l, towers_l_count, first_tower_l, dragons_l_count, baron_l_count, gold_l_count, bans_l_team, picks_l_team], index=index)
+    
+    index = ['Name', 'Result', 'Kills', 'First_Blood', 'Towers', 'First_Tower', 'Dragons', 'Barons', 'Gold', 'Bans', 'Picks', 'Match_id', 'Match_count']
+    left_team_stats = pd.Series([l_team_name, l_team_result, kills_l_counts, first_blood_l, towers_l_count, first_tower_l, dragons_l_count, baron_l_count, gold_l_count, bans_l_team, picks_l_team, match_id, match_count_i], index=index)
 
     return left_team_stats
 
 
-def get_right_team_stats(data: bs4.element.Tag) -> pd.Series:
+def get_right_team_stats(data: bs4.element.Tag, match_id: int, match_count_i: int) -> pd.Series:
     
+    r_team_name = data.find('div', attrs={'class': 'col-12 red-line-header'}).text.strip().replace('\n', '').split('-')[0]
     r_team_result = data.find('div', attrs={'class': 'col-12 red-line-header'}).text.replace(' ', '').replace('\n', '').split('-')[1]
     kills_r_count = data.find_all('div', attrs={'class': 'col-2'})[8].text.replace(' ', '').replace('\n', '')
     towers_r_count = data.find_all('div', attrs={'class': 'col-2'})[9].text.replace(' ', '').replace('\n', '')
@@ -107,10 +110,10 @@ def get_right_team_stats(data: bs4.element.Tag) -> pd.Series:
     picks_r_team = []
     for i in range(5):
         picks_r_team.append(data.find_all('div', attrs={'class': 'col-10'})[3].find_all('a')[i].get('title').split()[0])
-
-    index = ['Result', 'Kills', 'First_Blood', 'Towers', 'First_Tower', 'Dragons', 'Barons', 'Gold', 'Bans', 'Picks']
-    right_team_stats = pd.Series([r_team_result, kills_r_count, first_blood_r, towers_r_count, first_tower_r, dragons_r_count, barons_r_count, gold_r_count, bans_r_team, picks_r_team], index=index)
     
+    index = ['Name', 'Result', 'Kills', 'First_Blood', 'Towers', 'First_Tower', 'Dragons', 'Barons', 'Gold', 'Bans', 'Picks', 'Match_id', 'Match_count']
+    right_team_stats = pd.Series([r_team_name, r_team_result, kills_r_count, first_blood_r, towers_r_count, first_tower_r, dragons_r_count, barons_r_count, gold_r_count, bans_r_team, picks_r_team, match_id, match_count_i], index=index)
+        
     return right_team_stats
 
 
