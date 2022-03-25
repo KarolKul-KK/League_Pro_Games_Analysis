@@ -1,16 +1,15 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-
 import bs4
 from bs4 import BeautifulSoup
 import pandas as pd
 
 import time
 import re
+from typing import Tuple
 
 
-def get_match_count(soup: bs4.BeautifulSoup) -> int:
-    
+def get_match_count(soup: bs4.BeautifulSoup) -> Tuple[int, bs4.element.Tag]:
+
+    data = soup.find_all('div')[16]
     game_count = soup.find_all('div', attrs = {'class': 'collapse navbar-collapse'})[1]
     
     if len(game_count.find_all('li')) == 3:
@@ -26,7 +25,7 @@ def get_match_count(soup: bs4.BeautifulSoup) -> int:
     else:
         match_count = None
         
-    return int(match_count)
+    return int(match_count), data
 
 
 def get_general_data(data: bs4.element.Tag, active_url: str) -> pd.Series:
@@ -43,7 +42,7 @@ def get_general_data(data: bs4.element.Tag, active_url: str) -> pd.Series:
     index = ['Macth_id', 'Date', 'Left_Team', 'Right_Team', 'Tournament', 'Time']
     general_data_series = pd.Series([match_id, match_date, team_names[0], team_names[1], tournament_name, game_time], index=index)
     
-    return match_id, general_data_series
+    return general_data_series
 
 
 def get_left_team_stats(data: bs4.element.Tag) -> pd.Series:
@@ -78,7 +77,7 @@ def get_left_team_stats(data: bs4.element.Tag) -> pd.Series:
     index = ['Result', 'Kills', 'First_Blood', 'Towers', 'First_Tower', 'Dragons', 'Barons', 'Gold', 'Bans', 'Picks']
     left_team_stats = pd.Series([l_team_result, kills_l_counts, first_blood_l, towers_l_count, first_tower_l, dragons_l_count, baron_l_count, gold_l_count, bans_l_team, picks_l_team], index=index)
 
-    return left_team_stats, l_team_result
+    return left_team_stats
 
 
 def get_right_team_stats(data: bs4.element.Tag) -> pd.Series:
@@ -112,7 +111,7 @@ def get_right_team_stats(data: bs4.element.Tag) -> pd.Series:
     index = ['Result', 'Kills', 'First_Blood', 'Towers', 'First_Tower', 'Dragons', 'Barons', 'Gold', 'Bans', 'Picks']
     right_team_stats = pd.Series([r_team_result, kills_r_count, first_blood_r, towers_r_count, first_tower_r, dragons_r_count, barons_r_count, gold_r_count, bans_r_team, picks_r_team], index=index)
     
-    return right_team_stats, r_team_result
+    return right_team_stats
 
 
 def get_players_stats(data: bs4.element.Tag) -> pd.DataFrame:
@@ -158,10 +157,10 @@ def get_players_stats(data: bs4.element.Tag) -> pd.DataFrame:
     damage_distribution = data.find_all('table', attrs={'class': 'small_table'})[1].find_all('td')
     damage_distribution_l_team = []
     damage_distribution_r_team = []
-    for i in range(4, len(gold_distribution), 3):
+    for i in range(4, len(damage_distribution), 3):
         damage_distribution_l_team.append(damage_distribution[i].text)
 
-    for i in range(5, len(gold_distribution), 3):
+    for i in range(5, len(damage_distribution), 3):
         damage_distribution_r_team.append(damage_distribution[i].text)
 
     position = ['Top', 'Jungle', 'Mid', 'Adc', 'Support']
