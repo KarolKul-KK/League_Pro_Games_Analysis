@@ -39,7 +39,7 @@ def get_general_data(data: bs4.element.Tag, active_url: str) -> pd.Series:
     tournament_name = data.find('a').text
     game_time = data.find('div', attrs={'class': 'col-6 text-center'}).find('h1').text
 
-    index = ['Macth_id', 'Date', 'Left_Team', 'Right_Team', 'Tournament', 'Time']
+    index = ['Match_id', 'Date', 'Left_Team', 'Right_Team', 'Tournament', 'Time']
     general_data_series = pd.Series([match_id, match_date, team_names[0], team_names[1], tournament_name, game_time], index=index)
     
     return general_data_series
