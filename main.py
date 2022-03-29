@@ -3,8 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from game_stats_scrapper import get_match_count,  get_general_data, get_left_team_stats, get_right_team_stats, get_players_stats
-from urls_scrap import make_dir
+from game_stats_scrapper import get_match_count,  get_general_data, get_left_team_stats, get_right_team_stats, get_players_stats, make_dir
 
 import time
 import random
@@ -33,15 +32,23 @@ def main() -> None:
         match_count, data = get_match_count(soup)
 
         for i in range(match_count):
+            time.sleep(3)
             general_data_series = get_general_data(data, active_url)
-            left_team_stats = get_left_team_stats(data, general_data_series['match_id'], i)
-            right_team_stats = get_right_team_stats(data, general_data_series['match_id'], i)
-            player_stats = get_players_stats(data, general_data_series['match_id'], left_team_stats['Picks'], right_team_stats['Picks'], i)
+            time.sleep(1)
+            left_team_stats = get_left_team_stats(data, general_data_series['Match_id'], i)
+            time.sleep(1)
+            right_team_stats = get_right_team_stats(data, general_data_series['Match_id'], i)
+            time.sleep(1)
+            player_stats = get_players_stats(data, general_data_series['Match_id'], left_team_stats['Picks'], right_team_stats['Picks'], i)
+            time.sleep(1)
+            print(general_data_series['Date'])
 
             general_table = pd.concat([general_table, pd.DataFrame(general_data_series).T], ignore_index=True)
             left_team_stats_table = pd.concat([left_team_stats_table, pd.DataFrame(left_team_stats).T], ignore_index=True)
             right_team_stats_table = pd.concat([right_team_stats_table, pd.DataFrame(right_team_stats).T], ignore_index=True)
             players_stats_table = pd.concat([players_stats_table, player_stats], ignore_index=True)
+
+            driver.find_element_by_xpath(f'//*[@id="gameMenuToggler"]/ul/li[{i+3}]/a').click()
 
     general_table.to_csv('data/general_data.csv')
     pd.concat([left_team_stats, right_team_stats], ignore_index=True).to_csv('data/team_stats.csv')
