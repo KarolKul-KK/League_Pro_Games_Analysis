@@ -34,14 +34,18 @@ def main() -> None:
 
         for i in range(match_count):
             general_data_series = get_general_data(data, active_url)
-            left_team_stats = get_left_team_stats(data)
-            right_team_stats = get_right_team_stats(data)
-            player_stats = get_players_stats(data)
+            left_team_stats = get_left_team_stats(data, general_data_series['match_id'], i)
+            right_team_stats = get_right_team_stats(data, general_data_series['match_id'], i)
+            player_stats = get_players_stats(data, general_data_series['match_id'], left_team_stats['Picks'], right_team_stats['Picks'], i)
 
             general_table = pd.concat([general_table, pd.DataFrame(general_data_series).T], ignore_index=True)
             left_team_stats_table = pd.concat([left_team_stats_table, pd.DataFrame(left_team_stats).T], ignore_index=True)
             right_team_stats_table = pd.concat([right_team_stats_table, pd.DataFrame(right_team_stats).T], ignore_index=True)
-            players_stats_table = pd.concat([players_stats_table, player_stats])
+            players_stats_table = pd.concat([players_stats_table, player_stats], ignore_index=True)
+
+    general_table.to_csv('data/general_data.csv')
+    pd.concat([left_team_stats, right_team_stats], ignore_index=True).to_csv('data/team_stats.csv')
+    players_stats_table.to_csv('data/players_stats.csv')
 
 
 if __name__ == "__main__":
