@@ -5,6 +5,14 @@ import pandas as pd
 import time
 import re
 from typing import Tuple
+import os
+
+
+def make_dir():
+    
+    directory = 'data'
+    os.makedirs(directory, exist_ok=True)
+    print("Directory '%s' created or already exist" %directory)
 
 
 def get_match_count(soup: bs4.BeautifulSoup) -> Tuple[int, bs4.element.Tag]:
@@ -70,12 +78,15 @@ def get_left_team_stats(data: bs4.element.Tag, match_id: int, match_count_i: int
     
     bans_l_team = []
     for i in range(5):
-        bans_l_team.append(data.find_all('div', attrs={'class': 'col-10'})[0].find_all('a')[i].get('title').split()[0])
+        try:
+            bans_l_team.append(data.find_all('div', attrs={'class': 'col-10'})[0].find_all('a')[i].get('title').split()[0])
+        except:
+            bans_l_team.append(None)
         
     picks_l_team = []
     for i in range(5):
         picks_l_team.append(data.find_all('div', attrs={'class': 'col-10'})[1].find_all('a')[i].get('title').split()[0])
-    
+
     index = ['Name', 'Result', 'Kills', 'First_Blood', 'Towers', 'First_Tower', 'Dragons', 'Barons', 'Gold', 'Bans', 'Picks', 'Match_id', 'Match_count']
     left_team_stats = pd.Series([l_team_name, l_team_result, kills_l_counts, first_blood_l, towers_l_count, first_tower_l, dragons_l_count, baron_l_count, gold_l_count, bans_l_team, picks_l_team, match_id, match_count_i], index=index)
 
@@ -105,7 +116,10 @@ def get_right_team_stats(data: bs4.element.Tag, match_id: int, match_count_i: in
     
     bans_r_team = []
     for i in range(5):
-        bans_r_team.append(data.find_all('div', attrs={'class': 'col-10'})[2].find_all('a')[i].get('title').split()[0])
+        try:
+            bans_r_team.append(data.find_all('div', attrs={'class': 'col-10'})[2].find_all('a')[i].get('title').split()[0])
+        except:
+            bans_r_team.append(None)
     
     picks_r_team = []
     for i in range(5):
