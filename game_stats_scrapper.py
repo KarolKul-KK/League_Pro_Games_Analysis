@@ -5,6 +5,14 @@ import pandas as pd
 import time
 import re
 from typing import Tuple
+import os
+
+
+def make_dir():
+    
+    directory = 'data'
+    os.makedirs(directory, exist_ok=True)
+    print("Directory '%s' created or already exist" %directory)
 
 
 def get_match_count(soup: bs4.BeautifulSoup) -> Tuple[int, bs4.element.Tag]:
