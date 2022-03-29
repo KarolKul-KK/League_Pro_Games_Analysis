@@ -10,7 +10,7 @@ import re
 import os
 
 
-def chrome_driver() -> selenium.webdriver.safari.webdriver.WebDriver:
+def safari_driver() -> selenium.webdriver.safari.webdriver.WebDriver:
 
     url = "https://gol.gg/esports/home/"
     driver = webdriver.Safari()
@@ -25,7 +25,7 @@ def make_dir():
     print("Directory '%s' created or already exist" %directory)
 
 
-def get_urls(urls: list) -> None:
+def get_urls(urls: list, driver: selenium.webdriver.safari.webdriver.WebDriver) -> None:
         
     data = []
     html = driver.page_source
@@ -46,6 +46,7 @@ def get_urls(urls: list) -> None:
 def main() -> None:
 
     make_dir()
+    driver = safari_driver()
     urls = []
     while True:
         get_urls(urls)
@@ -55,9 +56,9 @@ def main() -> None:
     else:
         pd.Series(urls).to_csv('data/games_urls.csv')
 
+    driver.close()
 
 if __name__ == '__main__':
     main()
-    driver.close()
 
     
