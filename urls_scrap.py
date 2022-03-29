@@ -1,3 +1,4 @@
+import selenium
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
@@ -9,10 +10,13 @@ import re
 import os
 
 
-url = "https://gol.gg/esports/home/"
-driver = webdriver.Safari()
-driver.get(url)
+def chrome_driver() -> selenium.webdriver.safari.webdriver.WebDriver:
 
+    url = "https://gol.gg/esports/home/"
+    driver = webdriver.Safari()
+    driver.get(url)
+
+    return driver
 
 def make_dir():
     
