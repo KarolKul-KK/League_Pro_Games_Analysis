@@ -51,7 +51,8 @@ def main() -> None:
             driver.find_element_by_xpath(f'//*[@id="gameMenuToggler"]/ul/li[{i+3}]/a').click()
 
     general_table.to_csv('data/general_data.csv')
-    pd.concat([left_team_stats, right_team_stats], ignore_index=True).to_csv('data/team_stats.csv')
+    left_team_stats_table.to_csv('data/left_team_stats.csv')
+    right_team_stats_table.to_csv('data/right_team_stats.csv')
     players_stats_table.to_csv('data/players_stats.csv')
 
 
