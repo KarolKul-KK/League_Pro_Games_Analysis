@@ -46,9 +46,10 @@ def get_general_data(data: bs4.element.Tag, active_url: str) -> pd.Series:
     team_names = data.find('h1').text.split('vs')
     tournament_name = data.find('a').text
     game_time = data.find('div', attrs={'class': 'col-6 text-center'}).find('h1').text
+    game_version = data.find('div', attrs={'class': 'col-3 text-right'}).find('h1').text
 
-    index = ['Match_id', 'Date', 'Left_Team', 'Right_Team', 'Tournament', 'Time']
-    general_data_series = pd.Series([match_id, match_date, team_names[0], team_names[1], tournament_name, game_time], index=index)
+    index = ['Match_id', 'Date', 'Left_Team', 'Right_Team', 'Tournament', 'Time', 'Game_Version']
+    general_data_series = pd.Series([match_id, match_date, team_names[0], team_names[1], tournament_name, game_time, game_version], index=index)
     
     return general_data_series
 
@@ -166,19 +167,31 @@ def get_players_stats(data: bs4.element.Tag, match_id: int, left_team_picks: lis
     gold_distribution_l_team = []
     gold_distribution_r_team = []
     for i in range(4, len(gold_distribution), 3):
-        gold_distribution_l_team.append(gold_distribution[i].text)
+        try:
+            gold_distribution_l_team.append(gold_distribution[i].text)
+        except:
+            gold_distribution_l_team.append(None)
 
     for i in range(5, len(gold_distribution), 3):
-        gold_distribution_r_team.append(gold_distribution[i].text)
+        try:
+            gold_distribution_r_team.append(gold_distribution[i].text)
+        except:
+            gold_distribution_r_team.append(None)
         
     damage_distribution = data.find_all('table', attrs={'class': 'small_table'})[1].find_all('td')
     damage_distribution_l_team = []
     damage_distribution_r_team = []
     for i in range(4, len(damage_distribution), 3):
-        damage_distribution_l_team.append(damage_distribution[i].text)
+        try:
+            damage_distribution_l_team.append(damage_distribution[i].text)
+        except:
+            damage_distribution_l_team.append(None)
 
     for i in range(5, len(damage_distribution), 3):
-        damage_distribution_r_team.append(damage_distribution[i].text)
+        try:
+            damage_distribution_r_team.append(damage_distribution[i].text)
+        except:
+            damage_distribution_r_team.append(None)
     
     position = ['Top', 'Jungle', 'Mid', 'Adc', 'Support']
     match_id = [match_id, match_id, match_id, match_id, match_id]
