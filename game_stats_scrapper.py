@@ -167,19 +167,31 @@ def get_players_stats(data: bs4.element.Tag, match_id: int, left_team_picks: lis
     gold_distribution_l_team = []
     gold_distribution_r_team = []
     for i in range(4, len(gold_distribution), 3):
-        gold_distribution_l_team.append(gold_distribution[i].text)
+        try:
+            gold_distribution_l_team.append(gold_distribution[i].text)
+        except:
+            gold_distribution_l_team.append(None)
 
     for i in range(5, len(gold_distribution), 3):
-        gold_distribution_r_team.append(gold_distribution[i].text)
+        try:
+            gold_distribution_r_team.append(gold_distribution[i].text)
+        except:
+            gold_distribution_r_team.append(None)
         
     damage_distribution = data.find_all('table', attrs={'class': 'small_table'})[1].find_all('td')
     damage_distribution_l_team = []
     damage_distribution_r_team = []
     for i in range(4, len(damage_distribution), 3):
-        damage_distribution_l_team.append(damage_distribution[i].text)
+        try:
+            damage_distribution_l_team.append(damage_distribution[i].text)
+        except:
+            damage_distribution_l_team.append(None)
 
     for i in range(5, len(damage_distribution), 3):
-        damage_distribution_r_team.append(damage_distribution[i].text)
+        try:
+            damage_distribution_r_team.append(damage_distribution[i].text)
+        except:
+            damage_distribution_r_team.append(None)
     
     position = ['Top', 'Jungle', 'Mid', 'Adc', 'Support']
     match_id = [match_id, match_id, match_id, match_id, match_id]
