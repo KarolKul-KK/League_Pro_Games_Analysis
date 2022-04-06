@@ -1,10 +1,11 @@
 import sqlite3
 
 
-conn = sqlite3.connect('league_games.db') 
+conn = sqlite3.connect("league_games.db")
 c = conn.cursor()
 
-c.execute('''
+c.execute(
+    """
           CREATE TABLE IF NOT EXISTS General_Data(
             Match_id INTEGER,
             Date  TIMESTAMP,
@@ -14,9 +15,11 @@ c.execute('''
             Time TEXT,
             Game_Version TEXT
             )
-          ''')
-          
-c.execute('''
+          """
+)
+
+c.execute(
+    """
           CREATE TABLE IF NOT EXISTS Players_Stats(
               Player_Nickname TEXT,
               KDA TEXT,
@@ -28,9 +31,11 @@ c.execute('''
               Match_id INTEGER,
               Match_count INTEGER
             )   
-          ''')
+          """
+)
 
-c.execute('''
+c.execute(
+    """
           CREATE TABLE IF NOT EXISTS Team_Stats(
               Club_Name TEXT,
               Result TEXT,
@@ -54,6 +59,7 @@ c.execute('''
               match_id INTEGER,
               match_count INTEGER
             )   
-          ''')
-                     
+          """
+)
+
 conn.commit()
