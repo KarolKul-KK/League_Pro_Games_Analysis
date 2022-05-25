@@ -2,7 +2,7 @@
 
 ## Overview
 
-Project is building to download, store and analyze all League of Legends games in esport. Data is download from website: https://www.op.gg
+Project is building to download, store and analyze all League of Legends games in esport. Data is downloaded from website: https://www.op.gg
 This project was generated using `Kedro 0.18.1`.
 
 ## How to install dependencies
