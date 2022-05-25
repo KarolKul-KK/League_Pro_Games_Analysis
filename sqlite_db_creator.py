@@ -1,7 +1,9 @@
 import sqlite3
+import os
 
 
-conn = sqlite3.connect("league_games.db")
+path = os.path.normpath(os.getcwd() + os.sep + os.pardir)
+conn = sqlite3.connect(os.path.join(path, "LEAGUE_PRO_GAMES_ANALYSIS/data", "league.db"))
 c = conn.cursor()
 
 c.execute(

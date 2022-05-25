@@ -4,78 +4,6 @@ from sqlite3 import Error
 from kedro.pipeline import node
 
 
-def db_builder(db_file: str) -> None:
-    
-    conn = sqlite3.connect(db_file)
-    c = conn.cursor()
-
-    c.execute(
-        """
-            CREATE TABLE IF NOT EXISTS General_Data(
-                Match_id INTEGER,
-                Date  TIMESTAMP,
-                Blue_Team TEXT,
-                Red_Team TEXT,
-                Tournament TEXT,
-                Time TEXT,
-                Game_Version TEXT
-                )
-            """
-    )
-
-    c.execute(
-        """
-            CREATE TABLE IF NOT EXISTS Players_Stats(
-                Player_Nickname TEXT,
-                KDA TEXT,
-                CS INTEGER,
-                Damage_Distribution TEXT,
-                Gold_Distribution TEXT,
-                Champion TEXT,
-                Role TEXT,
-                Match_id INTEGER,
-                Match_count INTEGER
-                )   
-            """
-    )
-
-    c.execute(
-        """
-            CREATE TABLE IF NOT EXISTS Team_Stats(
-                Club_Name TEXT,
-                Result TEXT,
-                Kills INTEGER,
-                First_Blood TEXT,
-                Towers INTEGER,
-                First_Tower INTEGER,
-                Dragons INTEGER,
-                Barons INTEGER,
-                Gold TEXT,
-                Ban_1 TEXT,
-                Ban_2 TEXT,
-                Ban_3 TEXT,
-                Ban_4 TEXT,
-                Ban_5 TEXT,
-                Pick_1 TEXT,
-                Pick_2 TEXT,
-                Pick_3 TEXT,
-                Pick_4 TEXT,
-                Pick_5 TEXT,
-                match_id INTEGER,
-                match_count INTEGER
-                )   
-            """
-    )
-
-    conn.commit()
-
-
-def skipping_bad_lines(csv_file_path: str) -> None:
-    '''Function read csv, skipping bad lines and save csv'''
-    df = pd.read_csv(csv_file_path, index_col=0, error_bad_lines=False)
-    df.to_csv(csv_file_path)
-
-
 def _create_connection(db_file: str) -> sqlite3.Connection:
 
     conn = None
@@ -183,3 +111,76 @@ def inserting_team_stats(csv_file_path: str, db_file: str) -> None:
         _team_stats_insert(conn, [df['Name'][i], df['Result'][i], df['Kills'][i], df['First_Blood'][i], df['Towers'][i],
        df['First_Tower'][i], df['Dragons'][i], df['Barons'][i], df['Gold'][i], bans[0], bans[1], bans[2], bans[3], bans[4], picks[0], picks[1], picks[2], picks[3], picks[4], df['Match_id'][i],
        df['Match_count'][i]])
+
+
+
+def db_builder(db_file_path: str) -> None:
+    
+    conn = sqlite3.connect(db_file_path)
+    c = conn.cursor()
+
+    c.execute(
+        """
+            CREATE TABLE IF NOT EXISTS General_Data(
+                Match_id INTEGER,
+                Date  TIMESTAMP,
+                Blue_Team TEXT,
+                Red_Team TEXT,
+                Tournament TEXT,
+                Time TEXT,
+                Game_Version TEXT
+                )
+            """
+    )
+
+    c.execute(
+        """
+            CREATE TABLE IF NOT EXISTS Players_Stats(
+                Player_Nickname TEXT,
+                KDA TEXT,
+                CS INTEGER,
+                Damage_Distribution TEXT,
+                Gold_Distribution TEXT,
+                Champion TEXT,
+                Role TEXT,
+                Match_id INTEGER,
+                Match_count INTEGER
+                )   
+            """
+    )
+
+    c.execute(
+        """
+            CREATE TABLE IF NOT EXISTS Team_Stats(
+                Club_Name TEXT,
+                Result TEXT,
+                Kills INTEGER,
+                First_Blood TEXT,
+                Towers INTEGER,
+                First_Tower INTEGER,
+                Dragons INTEGER,
+                Barons INTEGER,
+                Gold TEXT,
+                Ban_1 TEXT,
+                Ban_2 TEXT,
+                Ban_3 TEXT,
+                Ban_4 TEXT,
+                Ban_5 TEXT,
+                Pick_1 TEXT,
+                Pick_2 TEXT,
+                Pick_3 TEXT,
+                Pick_4 TEXT,
+                Pick_5 TEXT,
+                match_id INTEGER,
+                match_count INTEGER
+                )   
+            """
+    )
+
+    conn.commit()
+
+
+def skipping_bad_lines(csv_file_path: str) -> None:
+    '''Function read csv, skipping bad lines and save csv'''
+    df = pd.read_csv(csv_file_path, index_col=0, error_bad_lines=False)
+    df.to_csv(csv_file_path)

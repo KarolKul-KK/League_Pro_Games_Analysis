@@ -128,4 +128,13 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-.yaml
+#file types
+.DS_Store
+*.csv
+*db
+
+
+#repo
+data/
+logs/
+kedro_setup/
