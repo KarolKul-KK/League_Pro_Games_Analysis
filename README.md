@@ -17,8 +17,8 @@ pip install -r src/requirements.txt
 
 ## How to download data
 1. Install dependencies
-2. Run urls_scrap.py
-3. Run main.py
+2. Run scrapper/urls_scrap.py
+3. Run scrapper/main.py
 
 Estimate time: 40 hours
 
