@@ -26,8 +26,9 @@ Estimate time: 40 hours
 ## Pipelines
 
 # data_inserting
-
+```
 -db_builder_node: kedro run --node db_builder_node --params param1:<path_to_db>
 -general_data_insert_node: kedro run --node general_data_insert_node --params param1:<path_to_file>,param2:<path_to_db> 
 -players_stats_insert_node: kedro run --node players_stats_insert_node --params param1:<path_to_file>,param2:<path_to_db>
 -team_stats_insert_node: kedro run --node team_stats_insert_node --params param1:<path_to_file>,param2:<path_to_db>
+```
