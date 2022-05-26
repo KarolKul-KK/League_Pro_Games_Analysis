@@ -88,7 +88,7 @@ def _string_to_list(string: str) -> list:
 def inserting_general_data(csv_file_path: str, db_file: str) -> None:
 
     conn = _create_connection(db_file)
-    df_general = pd.read_csv(csv_file_path, index_col=0)
+    df_general = pd.read_csv(csv_file_path, index_col=0, error_bad_lines=False)
     for i in range(len(df_general)):
         _general_data_insert(conn, df_general.iloc[i])
 
@@ -96,7 +96,7 @@ def inserting_general_data(csv_file_path: str, db_file: str) -> None:
 def inserting_players_stats(csv_file_path: str, db_file: str) -> None:
 
     conn = _create_connection(db_file)
-    df_players_stats = pd.read_csv(csv_file_path, index_col=0)
+    df_players_stats = pd.read_csv(csv_file_path, index_col=0, error_bad_lines=False)
     for i in range(len(df_players_stats)):
         _players_stats_insert(conn, df_players_stats.iloc[i])
 
@@ -104,7 +104,7 @@ def inserting_players_stats(csv_file_path: str, db_file: str) -> None:
 def inserting_team_stats(csv_file_path: str, db_file: str) -> None:
 
     conn = _create_connection(db_file)
-    df = pd.read_csv(csv_file_path, index_col=0)
+    df = pd.read_csv(csv_file_path, index_col=0, error_bad_lines=False)
     for i in range(len(df)):
         bans = _string_to_list(df['Bans'][i])
         picks = _string_to_list(df['Picks'][i])
@@ -178,9 +178,3 @@ def db_builder(db_file_path: str) -> None:
     )
 
     conn.commit()
-
-
-def skipping_bad_lines(csv_file_path: str) -> None:
-    '''Function read csv, skipping bad lines and save csv'''
-    df = pd.read_csv(csv_file_path, index_col=0, error_bad_lines=False)
-    df.to_csv(csv_file_path)

@@ -12,12 +12,6 @@ def create_pipeline(**kwargs) -> Pipeline:
                 name="db_builder_node",
             ),
             node(
-                func=skipping_bad_lines,
-                inputs="params:param1",
-                outputs=None,
-                name="skipping_bad_lines_node",
-            ),
-            node(
                 func=inserting_general_data,
                 inputs=['params:param1', 'params:param2'],
                 outputs=None,
