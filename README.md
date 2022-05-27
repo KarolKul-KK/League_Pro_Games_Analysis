@@ -7,10 +7,6 @@ This project was generated using `Kedro 0.18.1`.
 
 ## How to install dependencies
 
-Declare any dependencies in `src/requirements.txt` for `pip` installation and `src/environment.yml` for `conda` installation.
-
-To install them, run:
-
 ```
 pip install -r src/requirements.txt
 ```
