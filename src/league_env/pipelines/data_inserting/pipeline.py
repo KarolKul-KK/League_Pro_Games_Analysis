@@ -1,5 +1,5 @@
 from kedro.pipeline import Pipeline, node, pipeline
-from .nodes import db_builder, skipping_bad_lines, inserting_general_data, inserting_players_stats, inserting_team_stats
+from .nodes import db_builder, inserting_general_data, inserting_players_stats, inserting_team_stats
 
 
 def create_pipeline(**kwargs) -> Pipeline:

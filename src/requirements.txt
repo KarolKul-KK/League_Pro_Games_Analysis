@@ -13,3 +13,5 @@ pytest~=6.2
 pandas
 numpy
 sqlite~=3.38.3
+selenium
+bs4
