@@ -42,9 +42,8 @@ def _players_stats_insert(conn: sqlite3.Connection, players_data: pd.DataFrame) 
               Gold_Distribution,
               Champion,
               Role,
-              Match_id,
-              Match_count)
-              VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) """
+              Match_id)
+              VALUES(?, ?, ?, ?, ?, ?, ?, ?) """
     cur = conn.cursor()
     cur.execute(sql, players_data)
     conn.commit()
@@ -73,10 +72,9 @@ def _team_stats_insert(conn: sqlite3.Connection, teams_data: pd.DataFrame) -> No
               Pick_3,
               Pick_4,
               Pick_5,
-              match_id,
-              match_count
+              Match_id
             )   
-            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           """
     cur = conn.cursor()
     cur.execute(sql, teams_data)
@@ -90,7 +88,7 @@ def _string_to_list(string: str) -> list:
 def inserting_general_data(csv_file_path: str, db_file: str) -> None:
 
     conn = _create_connection(db_file)
-    df_general = pd.read_csv(
+    df = pd.read_csv(
         csv_file_path,
         usecols=[
             "Match_id",
@@ -100,29 +98,42 @@ def inserting_general_data(csv_file_path: str, db_file: str) -> None:
             "Tournament",
             "Time",
             "Game_Version",
+            "Match_count",
         ],
         dtype={
-            "Match_id": pd.np.float64,
+            "Match_id": int,
             "Date": str,
             "Left_Team": str,
             "Right_Team": str,
             "Tournament": str,
             "Time": str,
             "Game_Version": str,
+            "Match_count": int,
         },
         error_bad_lines=False,
     )
-    for i in range(len(df_general)):
-        _general_data_insert(conn, df_general.iloc[i])
+    for i in range(len(df)):
+        _general_data_insert(
+            conn,
+            [
+                int(float(str(df["Match_id"][i]) + str(df["Match_count"][i]))),
+                df["Date"][i],
+                df["Left_Team"][i],
+                df["Right_Team"][i],
+                df["Tournament"][i],
+                df['Time'][i],
+                df["Game_Version"][i],
+            ],
+        )
 
-    print(20*'*'+'DB Commited!'+20*'*')
+    print(20 * "*" + "DB Commited!" + 20 * "*")
 
 
 def inserting_players_stats(csv_file_path: str, db_file: str) -> None:
 
     conn = _create_connection(db_file)
     sqlite3.register_adapter(np.int64, int)
-    df_players_stats = pd.read_csv(
+    df = pd.read_csv(
         csv_file_path,
         usecols=[
             "0",
@@ -143,15 +154,27 @@ def inserting_players_stats(csv_file_path: str, db_file: str) -> None:
             "4": str,
             "5": str,
             "6": str,
-            "7": pd.np.float64,
-            "8": pd.np.float64,
+            "7": int,
+            "8": int
         },
         error_bad_lines=False,
     )
-    for i in range(len(df_players_stats)):
-        _players_stats_insert(conn, df_players_stats.iloc[i])
+    for i in range(len(df)):
+        _players_stats_insert(
+            conn,
+            [
+                df["0"][i],
+                df["1"][i],
+                df["2"][i],
+                df["3"][i],
+                df["4"][i],
+                df["5"][i],
+                df["6"][i],
+                int(float(str(df["7"][i]) + str(int(df["8"][i])))),
+            ],
+        )
 
-    print(20*'*'+'DB Commited!'+20*'*')
+    print(20 * "*" + "DB Commited!" + 20 * "*")
 
 
 def inserting_team_stats(csv_file_path: str, db_file: str) -> None:
@@ -187,8 +210,8 @@ def inserting_team_stats(csv_file_path: str, db_file: str) -> None:
             "Gold": str,
             "Bans": str,
             "Picks": str,
-            "Match_id": pd.np.float64,
-            "Match_count": pd.np.float64,
+            "Match_id": int,
+            "Match_count": int,
         },
         error_bad_lines=False,
     )
@@ -217,12 +240,11 @@ def inserting_team_stats(csv_file_path: str, db_file: str) -> None:
                 picks[2],
                 picks[3],
                 picks[4],
-                df["Match_id"][i],
-                df["Match_count"][i],
+                int(float(str(df["Match_id"][i]) + str(df["Match_count"][i]))),
             ],
         )
 
-    print(20*'*'+'DB Commited!'+20*'*')
+    print(20 * "*" + "DB Commited!" + 20 * "*")
 
 
 def db_builder(db_file_path: str) -> None:
@@ -240,8 +262,7 @@ def db_builder(db_file_path: str) -> None:
                 Red_Team TEXT,
                 Tournament TEXT,
                 Time TEXT,
-                Game_Version TEXT,
-                Match_count INTEGER
+                Game_Version TEXT
                 )
             """
     )
@@ -257,10 +278,7 @@ def db_builder(db_file_path: str) -> None:
                 Champion TEXT,
                 Role TEXT,
                 Match_id INTEGER,
-                Match_count INTEGER,
                 FOREIGN KEY(Match_id) REFERENCES General_Data(Match_id)
-                FOREIGN KEY(Match_count) REFERENCES General_Data(Match_count)
-
                 )   
             """
     )
@@ -287,10 +305,8 @@ def db_builder(db_file_path: str) -> None:
                 Pick_3 TEXT,
                 Pick_4 TEXT,
                 Pick_5 TEXT,
-                match_id TEXT,
-                match_count INTEGER,
-                FOREIGN KEY(match_id) REFERENCES General_Data(match_id)
-                FOREIGN KEY(Match_count) REFERENCES General_Data(Match_count)
+                Match_id INTEGER,
+                FOREIGN KEY(Match_id) REFERENCES General_Data(Match_id)
                 )   
             """
     )
