@@ -1,17 +1,17 @@
 # league_project
 
-## Overview
+# Overview
 
 Project is building to download, store and analyze all League of Legends games in esport. Data was downloaded from website: https://gol.gg
 This project was generated using `Kedro 0.18.1`.
 
-## How to install dependencies
+# How to install dependencies
 
 ```
 pip install -r src/requirements.txt
 ```
 
-## How to download data
+# How to download data
 1. Install dependencies
 2. Run scrapper/urls_scrap.py
 3. Run scrapper/main.py
@@ -19,9 +19,9 @@ pip install -r src/requirements.txt
 Estimate time: 40 hours
 
 
-## Pipelines
+# Pipelines
 
-# data_inserting
+## data_inserting
 ```
 -db_builder_node: kedro run --node db_builder_node --params param1:<path_to_db>
 -general_data_insert_node: kedro run --node general_data_insert_node --params param1:<path_to_file>,param2:<path_to_db> 
