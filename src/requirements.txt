@@ -1,4 +1,5 @@
 black~=22.0
+beautifulsoup4
 flake8>=3.7.9, <4.0
 ipython>=7.31.1, <8.0
 isort~=5.0
@@ -7,11 +8,16 @@ jupyterlab~=3.0
 kedro==0.18.1
 kedro-telemetry~=0.2.0
 nbstripout~=0.4
+pandas
 pytest-cov~=3.0
 pytest-mock>=1.7.1, <2.0
 pytest~=6.2
-pandas
+python-json-logger
+scikit-learn
+scipy
+selenium
+sklearn
 numpy
 sqlite~=3.38.3
 selenium
-bs4
+
