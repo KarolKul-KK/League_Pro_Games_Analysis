@@ -1,0 +1,14 @@
+beautifulsoup4
+black
+kedro
+numexpr
+numpy
+pandas
+pipelinehelper
+python-json-logger
+scikit-learn
+scipy
+selenium
+sklearn
+
+
